@@ -1,0 +1,11 @@
+﻿@using AspNetCoreMvcDemoApp.Core.Web.ViewComponents.Menu
+@model IEnumerable<MenuItem>
+
+<ul class="navbar-nav me-auto mb-2 mb-md-0">
+    @foreach (var item in Model)
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="@item.Url">@item.Text</a>
+        </li>
+    }
+</ul>

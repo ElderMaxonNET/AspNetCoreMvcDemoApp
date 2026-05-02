@@ -1,0 +1,54 @@
+﻿@model UserUpdateDto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1><a asp-action="Index">Users</a></h1>
+
+<form asp-action="Edit" enctype="multipart/form-data" method="post" v-autopost>
+    <input asp-for="Id" type="hidden" />
+    <div class="mb-3">
+        <label asp-for="RoleId" class="form-label fw-bold"></label>
+        <select asp-for="RoleId" class="form-select">
+            @foreach (var role in Model.RoleList)
+            {
+                <option value="@role.Id">@role.Name</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label fw-bold"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Surname" class="form-label fw-bold"></label>
+        <input asp-for="Surname" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Telephone" class="form-label fw-bold"></label>
+        <input asp-for="Telephone" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label fw-bold"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label fw-bold"></label>
+        <input asp-for="Password" type="password" autocomplete="off" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="File" class="form-label fw-bold"></label>
+        <input type="file" class="form-control" id="File" name="File" accept="@Model.AcceptFileTypes" />
+    </div>
+    <div class="mb-3 form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+        </label>
+    </div>
+    <div class="mb-3 mt-3">
+        <button type="submit" class="btn btn-primary">
+            Update
+        </button>
+    </div>
+</form>

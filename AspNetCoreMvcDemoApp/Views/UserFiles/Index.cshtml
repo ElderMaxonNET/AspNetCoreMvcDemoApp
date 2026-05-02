@@ -1,0 +1,75 @@
+﻿@model IndexViewModel<UserFilesListDto, UserFilesSearchDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1><a asp-action="Index">Files</a></h1>
+
+<div class="d-flex flex-column flex-md-row gap-2 justify-content-start">
+    <a asp-action="Create" class="btn btn-sm btn-outline-primary">
+        <i class="fa-solid fa-plus"></i> Create
+    </a>
+
+    <a href="#" class="btn btn-sm btn-outline-primary" v-if="table.data.hasRecords" :class="{ 'disabled': table.selection.count === 0 }" @@click.prevent="table.actions.delete({
+        event: $event,
+        url: '@Url.Action("Delete")',
+        requreText: 'Please select records to delete.',
+        confirmText: 'Are you sure you want to delete ' + table.selection.count + ' records?'
+        })">
+        <i class="fa-solid fa-trash"></i> Delete ({{ table.selection.count }})
+    </a>
+    <a href="@Url.Action("Index", new { search = true })" class="btn btn-sm btn-outline-primary">
+        <i class="fa-solid fa-magnifying-glass"></i> Search
+    </a>
+</div>
+
+@(await Html.PartialAsync("_FileSearch", Model.Context.Search, ViewData))
+
+<div v-if="table.data.hasRecords" class="table-responsive mt-2">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" @@change="table.selection.toggleAll" :checked="table.selection.isAllSelected" />
+                </th>
+                <th class="text-center">#</th>
+                <th v-for="column in table.columns" :key="column.name" @@click="table.sorting.apply(column.name)" :class="table.sorting.getClass(column.name)">
+                    {{ column.displayName }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="row in table.data.items" :key="row.id" :class="{ 'table-light': table.selection.isSelected(row.id) }">
+                <td>
+                    <input type="checkbox" v-model="table.selection.items" :value="row.id" />
+                </td>
+                <td class="text-center">
+                    <a :href="'@Url.Action("Edit")/' + row.id"><i class="fa-solid fa-pen-to-square"></i></a>
+                </td>
+                <td v-for="column in table.columns" :key="column.name">
+                    {{ row[column.name] }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center my-4">
+        <button class="btn btn-outline-primary" @@click.prevent="table.pagination.load($event)" :disabled="!table.pagination.hasMore">
+            {{ table.pagination.text }}
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.pageInit = () => {
+            const initialData = @(Model.ToRawJson());
+            const table = core.table(initialData);
+
+            return {
+                table
+            };
+        };
+    </script>
+}

@@ -1,0 +1,72 @@
+﻿@model IndexViewModel<UserFilesListDto, UserFilesSearchDto>
+
+@{
+    ViewData["Title"] = "Index";
+    var removeCols = new
+    {
+        Id = nameof(UserFilesListDto.Id),
+        CreatedAt = nameof(UserFilesListDto.CreatedAt)
+    };
+}
+
+<h1><a asp-action="Index">Download</a></h1>
+
+<div class="d-flex flex-column flex-md-row gap-2 justify-content-start">
+    <a href="@Url.Action("Index", new { search = true })" class="btn btn-sm btn-outline-primary">
+        <i class="fa-solid fa-magnifying-glass"></i> Search
+    </a>
+</div>
+
+@(await Html.PartialAsync("_FileSearch", Model.Context.Search, ViewData))
+
+<div v-if="table.data.hasRecords" class="table-responsive mt-2">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Download</th>
+                <th v-for="column in table.columns" :key="column.name" @@click="table.sorting.apply(column.name)" :class="table.sorting.getClass(column.name)">
+                    {{ column.displayName }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="row in table.data.items" :key="row.id" :class="{ 'table-light': table.selection.isSelected(row.id) }">
+                <td>
+                    <a :href="'@Url.Action("Get")/' + row.id" class="btn btn-outline-primary d-block"><i class="fa-solid fa-download"></i></a>
+                </td>
+                <td v-for="column in table.columns" :key="column.name">
+                    {{ row[column.name] }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center my-4">
+        <button class="btn btn-outline-primary" @@click.prevent="table.pagination.load($event)" :disabled="!table.pagination.hasMore">
+            {{ table.pagination.text }}
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.pageInit = () => {
+            const initialData = @(Model.ToRawJson());
+
+            const keysToDelete = [
+                '@(removeCols.Id)'.toLowerCase(),
+                '@(removeCols.CreatedAt)'.toLowerCase()
+            ];
+
+            initialData.columns = initialData.columns.filter(col =>
+                !keysToDelete.includes(col.name.toLowerCase())
+            );
+
+            const table = core.table(initialData);
+
+            return {
+                table
+            };
+        };
+    </script>
+}

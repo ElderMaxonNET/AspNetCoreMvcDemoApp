@@ -1,0 +1,127 @@
+﻿@inject IWebHostEnvironment hostEnv
+@inject IUserContext userContext
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - DemoApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <span class="navbar-brand">DemoApp</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+
+                    <!-- Panel Menus -->
+                    @await Component.InvokeAsync("Menu")
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                        <li class="nav-item d-flex align-items-center me-3">
+                            <div class="position-relative me-2">
+                                <img src="/uploads/avatar/small/@userContext.Current.Avatar"
+                                     class="rounded-circle border border-secondary shadow-sm"
+                                     style="height: 32px; width: 32px; object-fit: cover;"
+                                     alt="Avatar">
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="text-white small fw-bold line-height-1">@userContext.Current.FullName</span>
+                            </div>
+                        </li>
+                        <li class="nav-item d-none d-lg-block border-end border-secondary h-50 mx-2">&nbsp;</li>
+                        <li class="nav-item">
+                            @if (hostEnv.IsDevelopment())
+                            {
+                                <a class="nav-link small text-danger" asp-controller="Login" asp-action="Logout" asp-route-disableAutoLogin="true">
+                                    <i class="fa-solid fa-right-from-bracket d-lg-none"></i> Logout
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="nav-link small" asp-controller="Login" asp-action="Logout">Logout</a>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main id="app" class="container my-4">
+        <div v-show="utils.busy.isActive" class="loading-overlay">
+            <div class="text-center">
+                <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="text-light mt-2 fw-bold">Loading...</div>
+            </div>
+        </div>
+
+        @RenderBody()
+
+        <div class="modal-backdrop fade show" v-if="modal.state.isVisible"></div>
+        <div class="modal fade" :class="{ 'show d-block': modal.state.isVisible }" style="background: rgba(0,0,0,0.5)" tabindex="-1" v-if="modal.state.isVisible" @@click.self="modal.hide()">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" :class="modal.state.isSuccess ? 'bg-success' : 'bg-danger'">
+                        <h5 class="modal-title text-white">{{ modal.state.title }}</h5>
+                        <button type="button" class="btn-close" @@click="modal.hide()"></button>
+                    </div>
+                    <div class="modal-body text-dark">
+                        <template v-if="modal.state.isArray">
+                            <div v-for="m in modal.state.message"
+                                 class="d-block"
+                                 v-html="m"></div>
+                        </template>
+                        <template v-else>
+                            <div v-html="modal.state.message"></div>
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <template v-if="modal.state.isConfirm">
+                            <button type="button" class="btn btn-secondary" @@click="modal.answer(false)">Cancel</button>
+                            <button type="button" class="btn btn-primary" @@click="modal.answer(true)">Ok</button>
+                        </template>
+                        <template v-else>
+                            <button type="button" class="btn btn-dark" @@click="modal.hide()">Close</button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <span class="text-muted">&copy; 2026 - DemoApp</span>
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/vue.global.prod.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+            // Initialize Vue app
+            const appElement = document.querySelector('#app');
+            if (appElement) {
+                const app = window.core.createApp();
+                if (app) {
+                    app.mount('#app');
+                }
+            }
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Create";
+}
+
+<h1><a asp-action="Index">Files</a></h1>
+
+<form asp-action="Create" enctype="multipart/form-data" method="post" v-autopost="{ formType: 'multiple-upload', args:() => selectedFiles, callback: onSuccess }">
+    <div class="mb-3">
+        <div class="input-group mb-3">
+            <input type="file" class="form-control" multiple ref="fileInput" @@change="handleFileChange" id="multipleFile">
+            <span class="input-group-text my-tooltip" data-direction="top" data-tooltip="Hold CTRL to select multiple files.">
+                <i class="fa-regular fa-circle-question"></i>
+            </span>
+            <label class="input-group-text" for="multipleFile">MAX: {{ MAX_FILES }} FILES</label>
+        </div>
+    </div>
+
+    <div v-for="(file, index) in selectedFiles" :key="index" class="card mb-2 p-2 shadow-sm">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-truncate">
+                <strong>{{ file.name }}</strong>
+            </div>
+            <div class="col-md-8">
+                <input type="text"
+                       v-model="file.description"
+                       class="form-control form-control-sm"
+                       placeholder="File description...">
+            </div>
+        </div>
+    </div>
+
+    <button v-show="selectedFiles.length > 0" type="submit" class="btn btn-primary">
+        Upload {{ selectedFiles.length }} Files
+    </button>
+
+</form>
+
+@section Scripts {
+    <script>
+        window.pageInit = () => {
+            const { ref } = Vue;
+
+            const selectedFiles = ref([]);
+            const fileInput = ref(null);
+            const MAX_FILES = 5;
+
+            const clearSelection = () => {
+                selectedFiles.value = [];
+                if (fileInput.value) {
+                    fileInput.value.value = '';
+                }
+            };
+
+            const handleFileChange = (event) => {
+                const files = Array.from(event.target.files);
+
+                if (files.length > MAX_FILES) {
+                    core.modal.fail(`You can select a maximum of ${MAX_FILES} files.`);
+                    clearSelection();
+                    return;
+                }
+
+                selectedFiles.value = files.filter(file => file.size > 0).map(file => ({
+                        raw: file,
+                        name: file.name,
+                        description: ""
+                }));
+            };
+
+            const onSuccess = (res) => {
+                core.modal.success(res.detail);
+                clearSelection();
+            };
+
+            return {
+                selectedFiles,
+                fileInput,
+                handleFileChange,
+                onSuccess,
+                MAX_FILES
+            };
+        };
+    </script>
+}

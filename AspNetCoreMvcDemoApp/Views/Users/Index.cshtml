@@ -1,0 +1,119 @@
+﻿@model IndexViewModel<UserListDto, UserSearchDto>
+
+@{
+    ViewData["Title"] = "Index";
+
+    var customCols = new
+    {
+        Avatar = nameof(UserListDto.Avatar),
+        Active = nameof(UserListDto.Active),
+        IsSuperAdmin = nameof(UserListDto.IsSuperAdmin)
+    };
+}
+
+<h1><a asp-action="Index">Users</a></h1>
+
+<div class="d-flex flex-column flex-md-row gap-2 justify-content-start">
+    <a asp-action="Create" class="btn btn-sm btn-outline-primary">
+        <i class="fa-solid fa-plus"></i> Create
+    </a>
+    <a href="#" class="btn btn-sm btn-outline-primary" v-if="table.data.hasRecords" :class="{ 'disabled': table.selection.count === 0 }" @@click.prevent="
+        table.actions.delete({
+            event: $event,
+            url: '@Url.Action("Delete")',
+            requreText: 'Please select records to delete.',
+            confirmText: 'Are you sure you want to delete ' + table.selection.count + ' records?'
+        })">
+        <i class="fa-solid fa-trash"></i> Delete ({{ table.selection.count }})
+    </a>
+    <a href="@Url.Action("Index", new { search = true })" class="btn btn-sm btn-outline-primary">
+        <i class="fa-solid fa-magnifying-glass"></i> Search
+    </a>
+</div>
+
+@(await Html.PartialAsync("_Search", Model.Context.Search, ViewData))
+
+<div v-if="table.data.hasRecords" class="table-responsive mt-2">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" @@change="table.selection.toggleAll" :checked="table.selection.isAllSelected" />
+                </th>
+                <th class="text-center">#</th>
+                <th v-for="column in table.columns"
+                    :key="column.name"
+                    @@click="table.sorting.apply(column.name)"
+                    :class="[
+                    table.sorting.getClass(column.name),
+                    { 'text-center': column.is(customColumns) }
+                    ]">
+                    {{ column.displayName }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="row in table.data.items" :key="row.id" :class="{ 'table-light': table.selection.isSelected(row.id) }">
+                <td>
+                    <input type="checkbox" v-model="table.selection.items" :value="row.id" :disabled="!table.isSelectable(row)" />
+                </td>
+                <td class="text-center">
+                    <a :href="'@Url.Action("Edit")/' + row.id"><i class="fa-solid fa-pen-to-square"></i></a>
+                </td>
+                <td v-for="column in table.columns" :key="column.name" 
+                    :class="{ 'text-center': column.is(customColumns) }">
+
+                    <template v-if="column.is('@customCols.Avatar')">
+                        <img v-if="row[column.name]" :src="'/uploads/avatar/small/' + row[column.name]" class="img-fluid rounded" style="height:64px;" />
+                    </template>
+                            
+                    <template v-else-if="column.is('@customCols.Active')">
+                        <i v-if="row[column.name]"
+                           class="fa-solid fa-circle-check text-success fs-5" title="Active"></i>
+                        <i v-else
+                           class="fa-solid fa-circle-xmark text-muted fs-5" title="Passive"></i>
+                    </template>
+
+                    <template v-else-if="column.is('@customCols.IsSuperAdmin')">
+                        <i v-if="row[column.name]"
+                           class="fa-solid fa-user-shield text-danger fs-5" title="Yes"></i>
+                        <i v-else
+                           class="fa-solid fa-user text-muted fs-5" title="No"></i>
+                    </template>
+
+                    <template v-else>
+                        <span class="text-truncate d-inline-block">
+                            {{ row[column.name] }}
+                        </span>
+                    </template>
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center my-4" v-if="table.pagination.hasMore" ref="loadMoreArea">
+        <button class="btn btn-outline-primary" @@click.prevent="table.pagination.load">
+            {{ table.pagination.text }}
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.pageInit = () => {
+            const initialData = @(Model.ToRawJson());
+            const customColumns = Object.values(@(customCols.SerializeToRawJson()));
+            const table = core.table(
+                {
+                    ...initialData,
+                    isSelectable: (row) => {return row["isSuperAdmin"] !== true;}
+                });
+
+            return {
+                table,
+                customColumns
+            };
+        };
+    </script>
+}

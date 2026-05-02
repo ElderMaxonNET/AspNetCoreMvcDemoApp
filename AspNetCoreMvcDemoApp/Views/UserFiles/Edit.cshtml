@@ -1,0 +1,24 @@
+﻿@model UserFilesUpdateDto
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1><a asp-action="Index">Files</a></h1>
+
+<form asp-action="Edit" enctype="multipart/form-data" method="post" v-autopost>
+    <input asp-for="Id" type="hidden" />
+    <div class="mb-3">
+        <label asp-for="File" class="control-label"></label>
+        <input type="file" class="form-control" id="File" name="File" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="mb-3 mt-3">
+        <button type="submit" class="btn btn-primary">
+            Update
+        </button>
+    </div>
+</form>

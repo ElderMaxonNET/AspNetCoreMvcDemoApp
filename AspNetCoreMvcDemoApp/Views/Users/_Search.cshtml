@@ -1,0 +1,109 @@
+﻿@model UserSearchDto
+
+@if (Model.Enable)
+{
+    var Metadata = (ITableMetadata)ViewData[TableViewContext.MetadataKey]!;
+
+    <form @@submit.prevent="table.actions.search({ event: $event, url: '@Url.Action("Search")' })">
+        <div class="card mt-3 mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label asp-for="RoleId" class="form-label fw-bold"></label>
+                            <select asp-for="RoleId" class="form-select" vue-model>
+                                <option :value="null">- All -</option>
+                                @foreach (var role in Metadata.GetLookups<UserRole>("Roles"))
+                                {
+                                    <option value="@role.Id">@role.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label asp-for="NameSurname" class="form-label fw-bold"></label>
+                            <input asp-for="NameSurname" class="form-control" type="text" placeholder="Search by name..." vue-model />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold"></label>
+                            <input asp-for="Email" class="form-control" type="email" placeholder="example@mail.com" vue-model />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label asp-for="Telephone" class="form-label fw-bold"></label>
+                            <input asp-for="Telephone" class="form-control" type="tel" placeholder="05xx..." vue-model />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label asp-for="Status" class="form-label fw-bold"></label>
+                            <select asp-for="Status" class="form-select" vue-model>
+                                <option :value="null">- All -</option>
+                                <option value="1">Active</option>
+                                <option value="2">Passive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label asp-for="FastTimeType" class="form-label fw-bold"></label>
+                            <select asp-for="FastTimeType" class="form-select" vue-model>
+                                <option :value="null">- All -</option>
+                                @foreach (var item in Metadata.GetLookups<SelectListItem>(nameof(UserSearchDto.FastTimeType)))
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Date Range</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">
+                                Start
+                            </span>
+
+                            <input asp-for="StartDate"
+                                   type="date"
+                                   class="form-control"
+                                   vue-model
+                                   placeholder="Başlangıç" />
+
+                            <span class="input-group-text">
+                                End
+                            </span>
+
+                            <input asp-for="EndDate"
+                                   type="date"
+                                   class="form-control"
+                                   vue-model
+                                   placeholder="Bitiş" />
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-search fa-fw"></i>
+                        <span>SEARCH</span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" @@click="table.actions.filterReset()">
+                        <i class="fa fa-undo fa-fw"></i>
+                        <span>RESET</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+}

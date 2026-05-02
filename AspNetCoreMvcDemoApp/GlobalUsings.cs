@@ -1,0 +1,16 @@
+﻿global using AspNetCoreMvcDemoApp;
+global using AspNetCoreMvcDemoApp.Models;
+global using AspNetCoreMvcDemoApp.Models.Abstractions;
+global using AspNetCoreMvcDemoApp.Core.Web;
+global using AspNetCoreMvcDemoApp.Core.Data;
+global using AspNetCoreMvcDemoApp.Core.Data.Repositories;
+global using AspNetCoreMvcDemoApp.Core.Common;
+global using AspNetCoreMvcDemoApp.Core.Common.Enums;
+global using AspNetCoreMvcDemoApp.Core.Common.Exceptions;
+global using AspNetCoreMvcDemoApp.Core.Common.Extensions;
+global using AspNetCoreMvcDemoApp.Core.Infrastructure;
+global using AspNetCoreMvcDemoApp.Core.Infrastructure.DependencyInjection;
+global using AspNetCoreMvcDemoApp.Core.Infrastructure.Graphics;
+global using AspNetCoreMvcDemoApp.Core.Infrastructure.Json;
+global using AspNetCoreMvcDemoApp.Core.Web.Authentication;
+global using AspNetCoreMvcDemoApp.Core.Web.Authentication.Abstractions;

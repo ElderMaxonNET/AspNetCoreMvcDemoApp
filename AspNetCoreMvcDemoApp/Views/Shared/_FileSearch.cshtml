@@ -1,0 +1,97 @@
+﻿@model UserFilesSearchDto
+@if (Model.Enable)
+{
+    var Metadata = (ITableMetadata)ViewData[TableViewContext.MetadataKey]!;
+
+    <form @@submit.prevent="table.actions.search({ event: $event, url: '@Url.Action("Search")' })">
+        <div class="card mt-3 mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold"></label>
+                            <input asp-for="Description" class="form-control" type="text" vue-model/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="ContentType" class="form-label fw-bold"></label>
+                            <select asp-for="ContentType" class="form-select" vue-model>
+                                <option :value="null">- All -</option>
+                                @foreach (var item in Metadata.GetLookups<SelectListItem>(nameof(UserFilesSearchDto.ContentType)))
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="FileSize" class="form-label fw-bold"></label>
+                            <input asp-for="FileSize" class="form-control" type="number" vue-model/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="FileSizeOperator" class="form-label fw-bold"></label>
+                            <select asp-for="FileSizeOperator" class="form-select" vue-model>
+                                <option :value="null">- All -</option>
+                                @foreach (var item in Metadata.GetLookups<SelectListItem>(nameof(UserFilesSearchDto.FileSizeOperator)))
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label asp-for="FastTimeType" class="form-label fw-bold"></label>
+                            <select asp-for="FastTimeType" class="form-select" vue-model>
+                                <option :value="null">- All -</option>
+                                @foreach (var item in Metadata.GetLookups<SelectListItem>(nameof(UserFilesSearchDto.FastTimeType)))
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Date Range</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">
+                                Start
+                            </span>
+
+                            <input asp-for="StartDate"
+                                   type="date"
+                                   class="form-control"
+                                   vue-model
+                                   placeholder="Başlangıç" />
+
+                            <span class="input-group-text">
+                                End
+                            </span>
+
+                            <input asp-for="EndDate"
+                                   type="date"
+                                   class="form-control"
+                                   vue-model
+                                   placeholder="Bitiş" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fa fa-search fa-fw"></i>
+                        <span>SEARCH</span>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" @@click="table.actions.filterReset()">
+                        <i class="fa fa-undo fa-fw"></i>
+                        <span>RESET</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+}

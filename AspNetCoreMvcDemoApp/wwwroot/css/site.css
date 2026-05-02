@@ -1,0 +1,193 @@
+html {
+    scroll-behavior: smooth;
+}
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.link-list a:not(:last-child)::after {
+    content: " | ";
+}
+
+.center-wrapper {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.table-header-sort {
+    cursor: pointer;
+    position: relative;
+    padding-right: 1.2rem;
+}
+
+    /* Default Sort */
+    .table-header-sort::after {
+        font-family: "Font Awesome 7 Free"; 
+        content: "\f0dc"; /* fa-sort */
+        position: absolute;
+        margin-left: 0.5rem;
+        opacity: 0.3;
+    }
+
+    /* ASC */
+    .table-header-sort.sort-asc::after {
+        content: "\f0de"; /* fa-sort-up */
+        opacity: 1;
+        color: #0d6efd;
+    }
+
+    /* DESC */
+    .table-header-sort.sort-desc::after {
+        content: "\f0dd"; /* fa-sort-down */
+        opacity: 1;
+        color: #0d6efd;
+    }
+
+/* Vertical */
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(3px);
+}
+
+/* Tooltip */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+    [data-tooltip]::before, [data-tooltip]::after {
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        pointer-events: none;
+        z-index: 1000;
+    }
+
+    [data-tooltip]::before {
+        content: attr(data-tooltip);
+        background: rgba(26, 26, 26, 1);
+        color: #ffffff;
+        padding: 8px 16px;
+        border-radius: 6px;
+        max-width: 250px;
+        width: max-content;
+        text-align: center;
+        font-size: 14px;
+        filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
+    }
+
+    [data-tooltip]::after {
+        content: "";
+        border: 8px solid transparent;
+    }
+
+/* Positions */
+[data-direction="top"]::before, [data-direction="top"]::after {
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%) translateY(10px);
+}
+
+[data-direction="top"]::after {
+    border-top-color: rgba(26, 26, 26, 1);
+    margin-bottom: -4px;
+}
+
+[data-direction="top"]::before {
+    margin-bottom: 12px;
+}
+
+[data-direction="bottom"]::before, [data-direction="bottom"]::after {
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+[data-direction="bottom"]::after {
+    border-bottom-color: rgba(26, 26, 26, 1);
+    margin-top: -4px;
+}
+
+[data-direction="bottom"]::before {
+    margin-top: 12px;
+}
+
+[data-direction="left"]::before, [data-direction="left"]::after {
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%) translateX(10px);
+}
+
+[data-direction="left"]::after {
+    border-left-color: rgba(26, 26, 26, 1);
+    margin-right: -4px;
+}
+
+[data-direction="left"]::before {
+    margin-right: 12px;
+}
+
+[data-direction="right"]::before, [data-direction="right"]::after {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%) translateX(-10px);
+}
+
+[data-direction="right"]::after {
+    border-right-color: rgba(26, 26, 26, 1);
+    margin-left: -4px;
+}
+
+[data-direction="right"]::before {
+    margin-left: 12px;
+}
+
+/* Trigger */
+[data-tooltip]:hover::before, [data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+[data-direction="top"]:hover::before, [data-direction="top"]:hover::after,
+[data-direction="bottom"]:hover::before, [data-direction="bottom"]:hover::after {
+    transform: translateX(-50%) translateY(0);
+}
+
+[data-direction="left"]:hover::before, [data-direction="left"]:hover::after,
+[data-direction="right"]:hover::before, [data-direction="right"]:hover::after {
+    transform: translateY(-50%) translateX(0);
+}
