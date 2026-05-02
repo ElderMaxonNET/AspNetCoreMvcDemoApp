@@ -2,6 +2,31 @@
 
 This repository is a **comprehensive showcase** of the [SadLib](https://github.com/ElderMaxonNET/SadLib) library integrated into a robust **ASP.NET Core 10 MVC** architecture. It demonstrates professional software engineering patterns, clean code principles, and efficient infrastructure management.
 
+## 📸 Screenshots & Showcase
+
+The following screenshots demonstrate the core functionalities of the **AspNetCoreMvcDemoApp**, powered by the **SadLib** infrastructure framework.
+
+### 1. User Management (RBAC & Advanced Image Processing)
+A functional administration panel featuring role-based access control and automated profile image optimization.
+![Users Management](.github/screenshots/users.png)
+* **Automated Image Pipeline:** User avatars are automatically converted to **.webp** format and saved in **3 different dimensions** for optimized delivery.
+* **Granular RBAC:** Comprehensive permission management for Admins, Uploaders, and Downloaders.
+* **Advanced Filtering:** Multi-criteria search by role, status, date range, and contact info.
+
+### 2. File Operations & Multi-Upload
+This section demonstrates raw file handling and robust storage management via **SadLib** abstractions.
+![File Management](.github/screenshots/files.png)
+* **Bulk Upload & Custom Naming:** Support for **multi-file uploads** with the ability to assign custom filenames during the process.
+* **Flexible Extensions:** Managed storage and secure handling for various system-allowed raw file types.
+* **Integrated Search:** Efficiently locate stored assets using built-in search filters within the management console.
+
+### 3. Media Download Center
+A streamlined, high-performance interface for public or authenticated asset retrieval.
+![Download Center](.github/screenshots/downloads.png)
+* **Custom Security Middleware:** All file requests are intercepted by `FileSecurityMiddleware`, preventing unauthorized access even if the direct file URL is known.
+* **Search & Discovery:** Quickly find specific assets using the integrated search functionality.
+* **Optimized UX:** Implementing "Load More" pagination and secure download links for all infrastructure-stored files.
+
 ## 🌟 Key Architectural Features
 
 This demo isn't just a simple web app; it's a battle-tested infrastructure template:
